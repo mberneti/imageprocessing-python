@@ -1,18 +1,25 @@
-import matplotlib.pyplot as plt
+from numba import njit, prange
+import numpy as np
+from numba import njit, prange
 
 
-class MathHelper():
-    @staticmethod
-    def getMinMax(array):
-        max = min = array[0]
-        for item in array:
-            if(item > max):
-                max = item
-            if(item < min):
-                min = item
-        return min, max
+@njit
+def getMinMax(array):
+    n = array.shape[0]
+    min = max = array[0]
 
-    @staticmethod
-    def normalizeWithMinMax(x, min, max):
-        y = (x-min) / (max-min)
-        return y
+    for i in prange(n):
+        if(array[i] > max):
+            max = array[i]
+        elif(array[i] < min):
+            min = array[i]
+
+    return min, max
+
+
+@njit
+def normalizeWithMinMax(x, min, max):
+    if(min == max):
+        return 1
+    y = (x-min) / (max-min)
+    return y
